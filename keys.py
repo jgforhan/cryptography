@@ -2,7 +2,7 @@ import secrets
 import random
 import helpers
 
-class MakeKey:
+class Key:
 
     def __init__(self, size_bits=2048, trials=50):
         self.key = None
@@ -15,30 +15,39 @@ class MakeKey:
     def get_size(self):
         return self.size
 
+    ## Set the size of the key to be generated to 'new_size' bits
     def set_size(self, new_size):
         self.size = new_size
 
+    ## Get number of trials for which witnesses failed to disprove
+    ## the primality of the key
     def get_num_trials(self):
         return self.trials
 
+    ## Set the number of trials a key must pass in order to be accepted
     def set_num_trials(self, new_num_trials):
         self.trials = new_num_trials
     
+    ## A witness 'a' to the compositeness of 'n' is a number such that
+    ## Fermat's little theorem does not hold
+    ## i.e. [a**n] != [a] mod n
+    ## If this is the case, n cannot be prime
+    ## We attempt to make such a witness
     ## The lower limit is 2
     ## The upper limit is current key - 1
     def __create_witness__(self):
         # 2 <= return value < upper_bound
         return random.randrange(2, self.key-1)
     
-    # Create a list of witnesses length count to stand trial for
-    # Compositeness in the Miller-Robin test
+    ## Create a list of witnesses with length equal to the number of trials
+    ## to attempt to show compositeness in the Miller-Robin test
     def __create_witnesses__(self):
         witness_list = [self.__create_witness__() for i in range(self.trials)]
         return witness_list
     
     # decompose (accused - 1) into (2**k)q
     # where q is odd
-    # pow2_exp is the exponent k
+    # 'pow2_exp' is the exponent k
     def __miller_robin_decomp__(self, number):
         pow2_exp = 0
         odd_factor = -1
@@ -78,13 +87,14 @@ class MakeKey:
                 return witness
         return -1
 
-    # Generate a cryptographically strong random odd int of length 'num_bits' bits
+    ## Generate a cryptographically strong random odd int of length 'num_bits' bits
     def __attempt_generate_key__(self):
         ## MSB and LSB must be 1
         potential_key = 2**(self.size-1) + 1
         potential_key += secrets.randbits(self.size-2) << 1
         self.key = potential_key
 
+    ## Continue generating new keys until one passes all Miller-Robin trials
     def generate_key(self):
         while True:
             self.__attempt_generate_key__()

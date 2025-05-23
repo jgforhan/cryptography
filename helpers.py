@@ -1,4 +1,4 @@
-# Do a binary expansion of the 'exponent' of the power
+# Do a binary expansion of the given 'exponent'
 def _bin_expand(exponent):
     # From least to most significant
     bits = list()
@@ -26,6 +26,7 @@ def fast_powering(base, exponent, modulus):
         result = result % modulus
     return result
 
+## Returns the greatest common divisor of 'num1' and 'num2'
 def gcd(num1, num2):
     quotient = -1
     remainder = -1

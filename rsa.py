@@ -6,7 +6,7 @@ STANDARD_ENCRYPTION_EXPONENT = 65537
 class RSA:
     
     def __init__(self, size_bits):
-        key_gen = keys.MakeKey(size_bits=size_bits, trials=20)
+        key_gen = keys.Key(size_bits=size_bits, trials=20)
         self.prime_p = key_gen.generate_key()
         self.prime_q = key_gen.generate_key()
         self.N = self.prime_p * self.prime_q
